@@ -21,7 +21,6 @@ def get_data(args):
     data = str()
     if "input-file" in args.keys():
         file = open(args["input-file"], "r")
-
         data = file.read()
         file.close()
     else:
@@ -80,7 +79,6 @@ def train(args):
             for index in values:
                 new_values[index] += int(values[index])
         except EOFError:
-            print("err")
             pass
 
     for letter in data:
