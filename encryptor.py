@@ -111,14 +111,7 @@ def decoded_vigenere(data, keyword):
 
     return ''.join(encoded)
 
-    with open(args["model-file"], "rb") as model_file:
-        values = dict()
-        try:
-            values = pickle.load(model_file)
-            for index in values:
-                new_values[index] += int(values[index])
-        except EOFError:
-            pass
+    
 
 def hack_by_base(data, args):
     with open(args['base']) as base:
