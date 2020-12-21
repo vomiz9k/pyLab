@@ -49,16 +49,13 @@ def parse_argv():
 
 def get_data(args):
     data = str()
-<<<<<<< HEAD
     if 'input-file' in args.keys():
         with open(args['input-file'], 'r') as file:
             data = file.read()
-=======
     if "input-file" in args.keys():
         file = open(args["input-file"], "r")
         data = file.read()
         file.close()
->>>>>>> f454284f20228b3807e4f30d027399aee9a58806
     else:
         data = sys.stdin.read()
     return data
@@ -114,8 +111,6 @@ def decoded_vigenere(data, keyword):
 
     return ''.join(encoded)
 
-<<<<<<< HEAD
-=======
     with open(args["model-file"], "rb") as model_file:
         values = dict()
         try:
@@ -124,7 +119,6 @@ def decoded_vigenere(data, keyword):
                 new_values[index] += int(values[index])
         except EOFError:
             pass
->>>>>>> f454284f20228b3807e4f30d027399aee9a58806
 
 def hack_by_base(data, args):
     with open(args['base']) as base:
