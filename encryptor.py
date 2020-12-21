@@ -195,7 +195,7 @@ def encode(args):
     elif args['cipher'] == 'vigenere':
         keyword = args['key']
         encoded = encoded_vigenere(data, keyword)
-    put_data(encoded)
+    put_data(args, encoded)
 
 
 def decode(args):
@@ -206,7 +206,7 @@ def decode(args):
     elif args['cipher'] == 'vigenere':
         keyword = args['key']
         decoded = decoded_vigenere(data, keyword)
-    put_data(decoded)
+    put_data(args, decoded)
 
 
 def train(args):
@@ -236,14 +236,14 @@ def train(args):
 
 def hack(args):
     data = get_data(args)
-    if 'base' in args.keys:  # --base base.txt means base.txt is file with big amount of words. check words.txt
+    if 'base' in args.keys():  # --base base.txt means base.txt is file with big amount of words. check words.txt
         encoded = hack_by_base(data, args)
     elif 'model-file' in args.keys:
         encoded = hack_by_model(data, args)
     else:
         print('ERROR! Need something to hack. Try --base or --model-file.')
 
-    put_data(encoded)
+    put_data(args, encoded)
 
 
 # main:
