@@ -12,9 +12,11 @@ def encrypt_caesar(text, key):
     new_text = []
     for letter in text:
         if letter.isupper():
-            new_text.append(upper_alph[(upper_alph.find(letter) + key) % len(lower_alph)])
+            new_text.append(
+                upper_alph[(upper_alph.find(letter) + key) % len(lower_alph)])
         elif letter.islower():
-            new_text.append(lower_alph[(lower_alph.find(letter) + key) % len(lower_alph)])
+            new_text.append(
+                lower_alph[(lower_alph.find(letter) + key) % len(lower_alph)])
         else:
             new_text.append(letter)
     return ''.join(new_text)
@@ -29,38 +31,46 @@ for i in range(len(lower_alph)):
         vigenere_table[lower_alph[i]][lower_alph[j]] = curr_alph[j]
 
 
-
-
 def parse_argv():
     parser = argparse.ArgumentParser(description='Working with some cifers.')
-    parser.add_argument('--input-file', action='store', type=argparse.FileType('r'), required=False, help='input file')
-    parser.add_argument('--output-file', action='store', type=argparse.FileType('w'), required=False, help='output file')
-    
+    parser.add_argument('--input-file', action='store',
+                        type=argparse.FileType('r'), required=False, help='input file')
+    parser.add_argument('--output-file', action='store',
+                        type=argparse.FileType('w'), required=False, help='output file')
+
     subparsers = parser.add_subparsers(title='mode', dest='mode', help='mode')
 
     encoder = subparsers.add_parser('encode', help='encode')
-    encoder.add_argument('--cipher', action='store', type=str, required=True, help='cipher')
-    encoder.add_argument('--key', action='store', type=str, required=True, help='key')
+    encoder.add_argument('--cipher', action='store',
+                         type=str, required=True, help='cipher')
+    encoder.add_argument('--key', action='store',
+                         type=str, required=True, help='key')
 
     decoder = subparsers.add_parser('decode', help='decode')
-    decoder.add_argument('--cipher', action='store', type=str, required=True, help='cipher')
-    decoder.add_argument('--key', action='store', type=str, required=True, help='key')
-    
+    decoder.add_argument('--cipher', action='store',
+                         type=str, required=True, help='cipher')
+    decoder.add_argument('--key', action='store',
+                         type=str, required=True, help='key')
+
     trainer = subparsers.add_parser('train', help='train')
-    trainer.add_argument('--model-file', action='store', type=str, required=True, help='model file')
+    trainer.add_argument('--model-file', action='store',
+                         type=str, required=True, help='model file')
 
-    hacker= subparsers.add_parser('hack', help='hack')
-    subhackparsers = hacker.add_subparsers(title='method', dest='method', help='hacking method')
+    hacker = subparsers.add_parser('hack', help='hack')
+    subhackparsers = hacker.add_subparsers(
+        title='method', dest='method', help='hacking method')
 
-    base_hacker = subhackparsers.add_parser('base', help='hacking by base file')
-    base_hacker.add_argument('--base-file', action='store', type=argparse.FileType('r'), required=True, help='base file')
+    base_hacker = subhackparsers.add_parser(
+        'base', help='hacking by base file')
+    base_hacker.add_argument('--base-file', action='store',
+                             type=argparse.FileType('r'), required=True, help='base file')
 
-    model_hacker = subhackparsers.add_parser('model', help='hacking by model file')
-    model_hacker.add_argument('--model-file', action='store', type=argparse.FileType('rb'), required=True, help='model file')
+    model_hacker = subhackparsers.add_parser(
+        'model', help='hacking by model file')
+    model_hacker.add_argument('--model-file', action='store',
+                              type=argparse.FileType('rb'), required=True, help='model file')
 
-    
     return parser.parse_args()
-
 
 
 def get_data(input_file):
@@ -74,10 +84,9 @@ def get_data(input_file):
 
 def put_data(data, output_file):
     if output_file is None:
-        print(data)
-    else:
         sys.stdout.write(data)
-        
+    else:
+        output_file.write(data)
 
 
 def encrypt_vigenere(text, key):
@@ -87,7 +96,8 @@ def encrypt_vigenere(text, key):
         if text[i].islower():
             encoded.append(vigenere_table[text[i]][key[i % len(key)]])
         elif text[i].isupper():
-            encoded.append(vigenere_table[text[i].lower()][key[i % len(key)]].upper())
+            encoded.append(
+                vigenere_table[text[i].lower()][key[i % len(key)]].upper())
         else:
             encoded.append(text[i])
 
@@ -112,7 +122,6 @@ def decrypt_vigenere(text, key):
 
     return ''.join(encoded)
 
-    
 
 def hack_by_base(input_file, output_file, base_file):
     data = get_data(input_file)
@@ -143,14 +152,13 @@ def hack_by_model(input_file, output_file, model_file):
     values = pickle.load(model_file)
 
     model_frequency = get_frequency(values)
-    best_diff = float('inf')  # very big number
+    best_diff = float('inf')
     best_key = 0
 
     for k in range(len(lower_alph)):
         curr_values = dict()
         for char in lower_alph:
             curr_values[char] = 0
-        
 
         new_data = encrypt_caesar(data, k)
         for char in new_data:
@@ -173,7 +181,7 @@ def hack_by_model(input_file, output_file, model_file):
 
 def get_frequency(freq):
     frequency = dict()
-    count = sum(freq.values()) 
+    count = sum(freq.values())
     for key in values:
         frequency[key] = freq[key] / count
     return frequency
@@ -221,7 +229,7 @@ def train(input_file, model_file):
         pickle.dump(new_values, model_file)
 
 
-#main:
+# main:
 args = parse_argv()
 
 if args.mode == 'encode':
