@@ -232,9 +232,7 @@ def train(input_file, model_file):
         pickle.dump(new_values, model_file)
 
 
-
 #main:
-
 args = parse_argv()
 
 if args.mode == 'encode':
