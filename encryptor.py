@@ -245,7 +245,6 @@ elif args.mode == 'train':
     train(args.input_file, args.model_file)
 elif args.mode == 'hack':
     if args.method == 'base':
-        print("base")
         hack_by_base(args.input_file, args.output_file, args.base_file)
     elif args.method == 'model':
         hack_by_model(args.input_file, args.output_file, args.model_file)
