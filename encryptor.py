@@ -8,7 +8,7 @@ upper_alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 lower_alph = 'abcdefghijklmnopqrstuvwxyz'
 
 
-def encoded_caesar(text, key):
+def encrypt_caesar(text, key):
     new_text = []
     for letter in text:
         if letter.isupper():
@@ -24,7 +24,7 @@ vigenere_table = dict()
 
 for i in range(len(lower_alph)):
     vigenere_table[lower_alph[i]] = dict()
-    curr_alph = encoded_caesar(lower_alph, i)
+    curr_alph = encrypt_caesar(lower_alph, i)
     for j in range(len(lower_alph)):
         vigenere_table[lower_alph[i]][lower_alph[j]] = curr_alph[j]
 
@@ -76,49 +76,39 @@ def put_data(data, output_file):
     if output_file is None:
         print(data)
     else:
-        output_file.write(data)
+        sys.stdout.write(data)
         
 
 
-def encoded_vigenere(data, keyword):
-    key = []
-
-    for i in range(len(data)):
-        key.append(keyword[i % len(keyword)])
-    key = ''.join(key)
+def encrypt_vigenere(text, key):
     encoded = []
 
-    for i in range(len(data)):
-        if data[i].islower():
-            encoded.append(vigenere_table[data[i]][key[i]])
-        elif data[i].isupper():
-            encoded.append(vigenere_table[data[i].lower()][key[i]].upper())
+    for i in range(len(text)):
+        if text[i].islower():
+            encoded.append(vigenere_table[text[i]][key[i % len(key)]])
+        elif text[i].isupper():
+            encoded.append(vigenere_table[text[i].lower()][key[i % len(key)]].upper())
         else:
-            encoded.append(data[i])
+            encoded.append(text[i])
 
     return ''.join(encoded)
 
 
-def decoded_vigenere(data, keyword):
-    key = []
-
-    for i in range(len(data)):
-        key.append(keyword[i % len(keyword)])
-    key = ''.join(key)
+def decrypt_vigenere(text, key):
     encoded = []
 
-    for i in range(len(data)):
-        curr_str = vigenere_table[key[i]]
-        if data[i].islower():
+    for i in range(len(text)):
+        curr_str = vigenere_table[key[i % len(key)]]
+        if text[i].islower():
             for sym in lower_alph:
-                if curr_str[sym] == data[i]:
+                if curr_str[sym] == text[i]:
                     encoded.append(sym)
-        elif data[i].isupper():
+        elif text[i].isupper():
             for sym in lower_alph:
-                if curr_str[sym] == data[i].lower():
+                if curr_str[sym] == text[i].lower():
                     encoded.append(sym.upper())
         else:
-            encoded.append(data[i])
+            encoded.append(text[i])
 
     return ''.join(encoded)
 
@@ -135,9 +125,8 @@ def hack_by_base(input_file, output_file, base_file):
 
     for key in range(len(lower_alph)):
         curr_match = 0
-        curr_data = encoded_caesar(data, key)
+        curr_data = encrypt_caesar(data, key)
         curr_data_list = curr_data.split()
-        print(curr_data_list)
         for el in curr_data_list:
             if el in words:
                 curr_match += 1
@@ -146,7 +135,7 @@ def hack_by_base(input_file, output_file, base_file):
             best_match = curr_match
             best_key = key
 
-    put_data(encoded_caesar(data, best_key), output_file)
+    put_data(encrypt_caesar(data, best_key), output_file)
 
 
 def hack_by_model(input_file, output_file, model_file):
@@ -154,7 +143,7 @@ def hack_by_model(input_file, output_file, model_file):
     values = pickle.load(model_file)
 
     model_frequency = get_frequency(values)
-    best_diff = 3333210937801733.0  # very big number
+    best_diff = float('inf')  # very big number
     best_key = 0
 
     for k in range(len(lower_alph)):
@@ -163,7 +152,7 @@ def hack_by_model(input_file, output_file, model_file):
             curr_values[char] = 0
         
 
-        new_data = encoded_caesar(data, k)
+        new_data = encrypt_caesar(data, k)
         for char in new_data:
             if char.isalpha():
                 curr_values[char.lower()] += 1
@@ -179,7 +168,7 @@ def hack_by_model(input_file, output_file, model_file):
             best_diff = curr_diff
             best_key = k
 
-    put_data(encoded_caesar(data, best_key), output_file)
+    put_data(encrypt_caesar(data, best_key), output_file)
 
 
 def get_frequency(freq):
@@ -193,9 +182,9 @@ def get_frequency(freq):
 def encode(cipher, key, input_file, output_file):
     data = get_data(input_file)
     if cipher == 'caesar':
-        encoded = encoded_caesar(data, int(key))
+        encoded = encrypt_caesar(data, int(key))
     elif cipher == 'vigenere':
-        encoded = encoded_vigenere(data, key)
+        encoded = encrypt_vigenere(data, key)
     put_data(encoded, output_file)
 
 
@@ -203,9 +192,9 @@ def decode(cipher, key, input_file, output_file):
     data = get_data(input_file)
     if cipher == 'caesar':
         key = (len(lower_alph) - int(key)) % len(lower_alph)
-        decoded = encoded_caesar(data, key)
+        decoded = encrypt_caesar(data, key)
     elif args.cipher == 'vigenere':
-        decoded = decoded_vigenere(data, key)
+        decoded = decrypt_vigenere(data, key)
     put_data(decoded, output_file)
 
 
