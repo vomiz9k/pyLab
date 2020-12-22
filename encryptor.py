@@ -159,15 +159,14 @@ def hack_by_model(input_file, output_file, model_file):
 
     for k in range(len(lower_alph)):
         curr_values = dict()
-        curr_values['count'] = 0
         for char in lower_alph:
             curr_values[char] = 0
+        
 
         new_data = encoded_caesar(data, k)
         for char in new_data:
             if char.isalpha():
                 curr_values[char.lower()] += 1
-                curr_values['count'] += 1
 
         curr_frequency = get_frequency(curr_values)
         curr_diff = 0.0
@@ -183,12 +182,11 @@ def hack_by_model(input_file, output_file, model_file):
     put_data(encoded_caesar(data, best_key), output_file)
 
 
-def get_frequency(values):
+def get_frequency(freq):
     frequency = dict()
+    count = sum(freq.values()) 
     for key in values:
-        if key == 'count':
-            continue
-        frequency[key] = values[key] / values['count']
+        frequency[key] = freq[key] / count
     return frequency
 
 
@@ -214,7 +212,6 @@ def decode(cipher, key, input_file, output_file):
 def train(input_file, model_file):
     data = get_data(input_file)
     new_values = dict()
-    new_values['count'] = 0
     for char in lower_alph:
         new_values[char] = 0
 
@@ -229,7 +226,6 @@ def train(input_file, model_file):
 
     for letter in data:
         if letter.isalpha():
-            new_values['count'] += 1
             new_values[letter.lower()] += 1
 
     with open(model_file, 'wb') as model_file:
