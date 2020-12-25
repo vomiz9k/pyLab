@@ -211,14 +211,15 @@ def train(input_file, model_file):
     for char in lower_alph:
         new_values[char] = 0
 
-    
     try:
-        with open(model_file, 'rb') as model_file:
+        with open(model_file, 'rb') as file:
             values = dict()
-            values = pickle.load(model_file)
+            values = pickle.load(file)
             for index in values:
                 new_values[index] += int(values[index])
     except EOFError:
+        pass
+    except FileNotFoundError:
         pass
 
     for letter in data:
