@@ -3,9 +3,8 @@ import sys
 import os
 import pickle
 import argparse
-
-upper_alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-lower_alph = 'abcdefghijklmnopqrstuvwxyz'
+from string import ascii_uppercase as upper_alph
+from string import ascii_lowercase as lower_alph
 
 
 def encrypt_caesar(text, key):
@@ -182,7 +181,7 @@ def hack_by_model(input_file, output_file, model_file):
 def get_frequency(freq):
     frequency = dict()
     count = sum(freq.values())
-    for key in values:
+    for key in freq:
         frequency[key] = freq[key] / count
     return frequency
 
@@ -212,14 +211,15 @@ def train(input_file, model_file):
     for char in lower_alph:
         new_values[char] = 0
 
-    with open(model_file, 'rb') as model_file:
-        try:
+    
+    try:
+        with open(model_file, 'rb') as model_file:
             values = dict()
             values = pickle.load(model_file)
             for index in values:
                 new_values[index] += int(values[index])
-        except EOFError:
-            pass
+    except EOFError:
+        pass
 
     for letter in data:
         if letter.isalpha():
